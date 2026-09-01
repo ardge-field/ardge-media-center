@@ -9,39 +9,32 @@ body {
   padding: 0 24px;
 }
 
-.video-catalog-layout {
-  display: flex;
-  gap: 24px;
-  align-items: flex-start;
-}
-
+/* Rendered inside docsify's native .sidebar element, below the brand title. */
 .video-catalog-tabs {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  flex: 0 0 160px;
+  gap: 2px;
+  margin: 1rem 0 0;
 }
 
 .video-catalog-tab {
+  display: block;
+  width: 100%;
   text-align: left;
   border: none;
   background: transparent;
-  padding: 10px 12px;
-  border-radius: 6px;
+  padding: 0.5em 0.75em;
+  border-radius: 4px;
   cursor: pointer;
-  font-size: 14px;
-  color: #333;
+  font-size: inherit;
+  font-family: inherit;
+  color: var(--base-color, #333);
 }
 
 .video-catalog-tab.active {
-  background: #42b983;
+  background: var(--theme-color, #42b983);
   color: #fff;
   font-weight: 600;
-}
-
-.video-catalog-main {
-  flex: 1;
-  min-width: 0;
 }
 
 .video-catalog-toolbar {

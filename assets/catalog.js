@@ -151,9 +151,8 @@ function renderFilterGroup(parent, label, values, activeValue, onChange) {
   parent.appendChild(group);
 }
 
-function renderCategoryTabs(parent, activeCategory, onChange) {
-  var tabs = document.createElement('div');
-  tabs.className = 'video-catalog-tabs';
+function renderCategoryTabs(host, activeCategory, onChange) {
+  host.className = 'video-catalog-tabs';
 
   var buttons = CATEGORIES.map(function (category) {
     var btn = document.createElement('button');
@@ -165,11 +164,25 @@ function renderCategoryTabs(parent, activeCategory, onChange) {
       btn.classList.add('active');
       onChange(category);
     });
-    tabs.appendChild(btn);
+    host.appendChild(btn);
     return btn;
   });
+}
 
-  parent.appendChild(tabs);
+function mountSidebarTabs(activeCategory, onChange) {
+  var sidebar = document.querySelector('.sidebar');
+  if (!sidebar) return;
+  var existing = sidebar.querySelector('.video-catalog-tabs');
+  if (existing) existing.remove();
+
+  var tabsHost = document.createElement('div');
+  var nameHeading = sidebar.querySelector('h1');
+  if (nameHeading && nameHeading.nextSibling) {
+    sidebar.insertBefore(tabsHost, nameHeading.nextSibling);
+  } else {
+    sidebar.appendChild(tabsHost);
+  }
+  renderCategoryTabs(tabsHost, activeCategory, onChange);
 }
 
 function renderApp(container, videos) {
@@ -178,30 +191,22 @@ function renderApp(container, videos) {
 
   container.innerHTML = '';
 
-  var layout = document.createElement('div');
-  layout.className = 'video-catalog-layout';
-  container.appendChild(layout);
+  var toolbar = document.createElement('div');
+  toolbar.className = 'video-catalog-toolbar';
+  container.appendChild(toolbar);
+
+  var grid = document.createElement('div');
+  grid.className = 'video-catalog-grid';
+  container.appendChild(grid);
 
   function rerender() {
     renderGrid(grid, filterVideos(videos, state));
   }
 
-  renderCategoryTabs(layout, state.category, function (value) {
+  mountSidebarTabs(state.category, function (value) {
     state.category = value;
     rerender();
   });
-
-  var main = document.createElement('div');
-  main.className = 'video-catalog-main';
-  layout.appendChild(main);
-
-  var toolbar = document.createElement('div');
-  toolbar.className = 'video-catalog-toolbar';
-  main.appendChild(toolbar);
-
-  var grid = document.createElement('div');
-  grid.className = 'video-catalog-grid';
-  main.appendChild(grid);
 
   renderFilterGroup(toolbar, '類型', ['all'].concat(options.types), state.type, function (value) {
     state.type = value;
