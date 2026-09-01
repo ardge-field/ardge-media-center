@@ -2,8 +2,17 @@
 # 格式:分類|類型|標題|YouTube網址
 # 分類固定為三個業務分類(對應左側頁籤):行銷宣傳 / 教育訓練 / 參考素材,新增列時分類欄位請填這三者之一。
 # 類型欄位為自由文字,新增新類型不需要改程式,類型篩選按鈕會自動掃描本檔案產生選項。
+# 標題若要加分隔符號,請用全形「｜」,不要用半形「|」(半形會被誤判為欄位分隔線,導致整行被跳過)。
 # 下面四筆為範例資料,正式上線前請維護者換成實際的 unlisted 影片連結。
-行銷宣傳|影片|2026春季新品發表會|https://youtu.be/dQw4w9WgXcQ
-教育訓練|短片|新人到職安全須知|https://youtu.be/dQw4w9WgXcQ
-教育訓練|影片|內部系統操作教學|https://youtu.be/dQw4w9WgXcQ
+行銷宣傳|影片|ARX OS｜Enterprise On-Premise AI Platform in 80 Seconds|https://youtu.be/fAAXvksDI8Q
+行銷宣傳|影片|ARX OS｜企業級地端 AI 平台，一支影片看懂|https://youtu.be/C3oFJMlf7Fg
+行銷宣傳|影片|ARX OS｜ARX-100：企業導入 Private AI 的第一步｜Sales/Channel/SI/ISV 教育訓練|https://youtu.be/N2h9byOX9BI
+行銷宣傳|影片|AI 落地，資料不出門｜ARDGE ARX OS 私有 AI 平台|https://youtu.be/64HZ5g8ZisY
+行銷宣傳|短片|ARX OS｜Enterprise On-Premise AI Platform in 80 Seconds|https://youtube.com/shorts/zIOJZ9SOL2w
+行銷宣傳|短片|ARX OS｜企業級地端 AI 平台，一支影片看懂|https://youtube.com/shorts/irXI1AsOsso
+行銷宣傳|短片|1/10 成本啟動 Private AI PoC｜ARX-100|https://youtube.com/shorts/Vnk31EOddYA
+行銷宣傳|短片|AI 落地，資料不出門｜ARX OS|https://youtube.com/shorts/EetIksnWuxA
+教育訓練|影片|ARX-100 燒錄 ARX OS 全過程實錄:從 BIOS 設定到開機驗證｜2026.08.25|https://youtu.be/4mRvl45nuwA
+教育訓練|影片|ARX-100 部署實錄:ARX OS 初始化精靈到桌面登入全程操作｜2026.08.25|https://youtu.be/_Q6Kk7-6aJY
+教育訓練|影片|ARX-100 操作教學:ARX OS 主控台如何啟用/停用 SSH 存取(SSH On/Off)｜2026.08.28|https://youtu.be/Ucx00kWb4AY
 參考素材|影片|參考素材範例|https://youtu.be/dQw4w9WgXcQ
