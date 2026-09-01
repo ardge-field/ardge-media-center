@@ -1,0 +1,103 @@
+body {
+  font-family: -apple-system, "Segoe UI", "PingFang TC", "Microsoft JhengHei", sans-serif;
+  margin: 0;
+  padding: 0 24px;
+}
+
+.video-catalog-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+  margin: 16px 0;
+}
+
+.video-catalog-filter-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.video-catalog-filter-label {
+  font-weight: 600;
+  color: #555;
+}
+
+.video-catalog-filter-btn {
+  border: 1px solid #ccc;
+  background: #fff;
+  border-radius: 999px;
+  padding: 4px 12px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.video-catalog-filter-btn.active {
+  background: #42b983;
+  border-color: #42b983;
+  color: #fff;
+}
+
+.video-catalog-search {
+  flex: 1;
+  min-width: 200px;
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.video-catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 16px;
+  margin-bottom: 32px;
+}
+
+.video-catalog-card {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.video-catalog-thumb {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  display: block;
+  background: #eee;
+}
+
+.video-catalog-thumb-fallback {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  font-size: 13px;
+}
+
+.video-catalog-meta {
+  padding: 8px 10px;
+}
+
+.video-catalog-title {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.video-catalog-tags {
+  font-size: 12px;
+  color: #888;
+}
+
+.video-catalog-empty,
+.video-catalog-error {
+  color: #888;
+  padding: 24px 0;
+}

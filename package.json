@@ -1,0 +1,9 @@
+{
+  "name": "media-center-site",
+  "private": true,
+  "version": "1.0.0",
+  "description": "Internal media center: catalog of unlisted YouTube videos",
+  "scripts": {
+    "test": "node --test tests/"
+  }
+}
