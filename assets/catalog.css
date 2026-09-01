@@ -1,7 +1,47 @@
+:root {
+  /* docsify-themeable Simple theme variable: make the brand title as bold as possible. */
+  --sidebar-name-font-weight: 900;
+}
+
 body {
   font-family: -apple-system, "Segoe UI", "PingFang TC", "Microsoft JhengHei", sans-serif;
   margin: 0;
   padding: 0 24px;
+}
+
+.video-catalog-layout {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.video-catalog-tabs {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 0 0 160px;
+}
+
+.video-catalog-tab {
+  text-align: left;
+  border: none;
+  background: transparent;
+  padding: 10px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+}
+
+.video-catalog-tab.active {
+  background: #42b983;
+  color: #fff;
+  font-weight: 600;
+}
+
+.video-catalog-main {
+  flex: 1;
+  min-width: 0;
 }
 
 .video-catalog-toolbar {

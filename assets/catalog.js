@@ -3,6 +3,11 @@
 
 var VideoCatalog = {};
 
+// Fixed business-category tabs (left nav). Unlike 類型 (type), which is
+// still derived dynamically from videos.txt, these three are a deliberate,
+// stable taxonomy chosen by the site owner rather than free-text data.
+var CATEGORIES = ['行銷宣傳', '教育訓練', '測試素材'];
+
 function extractYouTubeId(url) {
   if (!url) return null;
   var patterns = [
@@ -146,28 +151,58 @@ function renderFilterGroup(parent, label, values, activeValue, onChange) {
   parent.appendChild(group);
 }
 
+function renderCategoryTabs(parent, activeCategory, onChange) {
+  var tabs = document.createElement('div');
+  tabs.className = 'video-catalog-tabs';
+
+  var buttons = CATEGORIES.map(function (category) {
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.textContent = category;
+    btn.className = 'video-catalog-tab' + (category === activeCategory ? ' active' : '');
+    btn.addEventListener('click', function () {
+      buttons.forEach(function (b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+      onChange(category);
+    });
+    tabs.appendChild(btn);
+    return btn;
+  });
+
+  parent.appendChild(tabs);
+}
+
 function renderApp(container, videos) {
-  var state = { category: 'all', type: 'all', keyword: '' };
+  var state = { category: CATEGORIES[0], type: 'all', keyword: '' };
   var options = groupOptions(videos);
 
   container.innerHTML = '';
 
-  var toolbar = document.createElement('div');
-  toolbar.className = 'video-catalog-toolbar';
-  container.appendChild(toolbar);
-
-  var grid = document.createElement('div');
-  grid.className = 'video-catalog-grid';
-  container.appendChild(grid);
+  var layout = document.createElement('div');
+  layout.className = 'video-catalog-layout';
+  container.appendChild(layout);
 
   function rerender() {
     renderGrid(grid, filterVideos(videos, state));
   }
 
-  renderFilterGroup(toolbar, '分類', ['all'].concat(options.categories), state.category, function (value) {
+  renderCategoryTabs(layout, state.category, function (value) {
     state.category = value;
     rerender();
   });
+
+  var main = document.createElement('div');
+  main.className = 'video-catalog-main';
+  layout.appendChild(main);
+
+  var toolbar = document.createElement('div');
+  toolbar.className = 'video-catalog-toolbar';
+  main.appendChild(toolbar);
+
+  var grid = document.createElement('div');
+  grid.className = 'video-catalog-grid';
+  main.appendChild(grid);
+
   renderFilterGroup(toolbar, '類型', ['all'].concat(options.types), state.type, function (value) {
     state.type = value;
     rerender();
@@ -175,7 +210,7 @@ function renderApp(container, videos) {
 
   var searchInput = document.createElement('input');
   searchInput.type = 'text';
-  searchInput.placeholder = '輸入關鍵字搜尋標題/分類/類型';
+  searchInput.placeholder = '輸入關鍵字搜尋標題/類型';
   searchInput.className = 'video-catalog-search';
   searchInput.addEventListener('input', function () {
     state.keyword = searchInput.value;
