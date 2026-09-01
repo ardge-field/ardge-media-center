@@ -9,6 +9,12 @@ body {
   padding: 0 24px;
 }
 
+/* docsify's own auto-generated page-anchor nav is replaced by the
+   "影片索引" heading + tabs below, so hide it to avoid a duplicate entry. */
+.sidebar-nav {
+  display: none;
+}
+
 /* Rendered inside docsify's native .sidebar element, below the brand title. */
 .video-catalog-tabs {
   display: flex;
@@ -17,13 +23,22 @@ body {
   margin: 1rem 0 0;
 }
 
+.video-catalog-tabs-heading {
+  font-weight: var(--strong-font-weight, 600);
+  font-size: smaller;
+  color: var(--heading-color, #333);
+  padding: 0.25em 0.75em;
+  border-bottom: 1px solid var(--sidebar-border-color, #e0e0e0);
+  margin-bottom: 0.25em;
+}
+
 .video-catalog-tab {
   display: block;
   width: 100%;
   text-align: left;
   border: none;
   background: transparent;
-  padding: 0.5em 0.75em;
+  padding: 0.5em 0.75em 0.5em 1.5em;
   border-radius: 4px;
   cursor: pointer;
   font-size: inherit;

@@ -154,6 +154,11 @@ function renderFilterGroup(parent, label, values, activeValue, onChange) {
 function renderCategoryTabs(host, activeCategory, onChange) {
   host.className = 'video-catalog-tabs';
 
+  var heading = document.createElement('div');
+  heading.className = 'video-catalog-tabs-heading';
+  heading.textContent = '影片索引';
+  host.appendChild(heading);
+
   var buttons = CATEGORIES.map(function (category) {
     var btn = document.createElement('button');
     btn.type = 'button';
