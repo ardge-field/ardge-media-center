@@ -6,7 +6,7 @@ var VideoCatalog = {};
 // Fixed business-category tabs (left nav). Unlike 類型 (type), which is
 // still derived dynamically from videos.txt, these three are a deliberate,
 // stable taxonomy chosen by the site owner rather than free-text data.
-var CATEGORIES = ['行銷宣傳', '教育訓練', '測試素材'];
+var CATEGORIES = ['行銷宣傳', '教育訓練', '參考素材'];
 
 function extractYouTubeId(url) {
   if (!url) return null;
