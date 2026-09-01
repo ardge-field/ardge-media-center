@@ -45,3 +45,36 @@ test('getThumbnailUrl builds the static thumbnail URL', () => {
     'https://img.youtube.com/vi/abcdEFGH123/hqdefault.jpg'
   );
 });
+
+test('parseVideosText parses well-formed lines', () => {
+  var text = '行銷|影片|2026春季新品發表|https://youtu.be/aaaaaaaaaaa\n' +
+              '教育訓練|短片|新人到職安全須知|https://youtu.be/bbbbbbbbbbb';
+  var videos = VideoCatalog.parseVideosText(text);
+  assert.equal(videos.length, 2);
+  assert.deepEqual(videos[0], {
+    category: '行銷',
+    type: '影片',
+    title: '2026春季新品發表',
+    url: 'https://youtu.be/aaaaaaaaaaa'
+  });
+});
+
+test('parseVideosText skips blank lines and # comments', () => {
+  var text = '# 這是註解\n\n行銷|影片|標題A|https://youtu.be/aaaaaaaaaaa\n';
+  var videos = VideoCatalog.parseVideosText(text);
+  assert.equal(videos.length, 1);
+});
+
+test('parseVideosText skips malformed lines without throwing', () => {
+  var text = '行銷|影片|缺欄位的一行\n行銷|影片|正常這行|https://youtu.be/aaaaaaaaaaa';
+  var videos = VideoCatalog.parseVideosText(text);
+  assert.equal(videos.length, 1);
+  assert.equal(videos[0].title, '正常這行');
+});
+
+test('parseVideosText trims whitespace around fields', () => {
+  var text = ' 行銷 | 影片 | 標題A | https://youtu.be/aaaaaaaaaaa ';
+  var videos = VideoCatalog.parseVideosText(text);
+  assert.equal(videos[0].category, '行銷');
+  assert.equal(videos[0].url, 'https://youtu.be/aaaaaaaaaaa');
+});

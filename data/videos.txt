@@ -1,0 +1,7 @@
+# Media Center 影片清單
+# 格式:分類|類型|標題|YouTube網址
+# 分類與類型欄位為自由文字,新增新分類/類型不需要改程式,篩選按鈕會自動掃描本檔案產生選項。
+# 下面三筆為範例資料,正式上線前請維護者換成實際的 unlisted 影片連結。
+行銷|影片|2026春季新品發表會|https://youtu.be/dQw4w9WgXcQ
+教育訓練|短片|新人到職安全須知|https://youtu.be/dQw4w9WgXcQ
+教育訓練|影片|內部系統操作教學|https://youtu.be/dQw4w9WgXcQ
