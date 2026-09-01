@@ -42,9 +42,37 @@ function parseVideosText(text) {
   return videos;
 }
 
+function groupOptions(videos) {
+  var categories = [];
+  var types = [];
+  videos.forEach(function (v) {
+    if (categories.indexOf(v.category) === -1) categories.push(v.category);
+    if (types.indexOf(v.type) === -1) types.push(v.type);
+  });
+  return { categories: categories, types: types };
+}
+
+function filterVideos(videos, filters) {
+  filters = filters || {};
+  var category = filters.category || 'all';
+  var type = filters.type || 'all';
+  var keyword = (filters.keyword || '').trim().toLowerCase();
+  return videos.filter(function (v) {
+    if (category !== 'all' && v.category !== category) return false;
+    if (type !== 'all' && v.type !== type) return false;
+    if (keyword &&
+        v.title.toLowerCase().indexOf(keyword) === -1 &&
+        v.category.toLowerCase().indexOf(keyword) === -1 &&
+        v.type.toLowerCase().indexOf(keyword) === -1) return false;
+    return true;
+  });
+}
+
 VideoCatalog.extractYouTubeId = extractYouTubeId;
 VideoCatalog.getThumbnailUrl = getThumbnailUrl;
 VideoCatalog.parseVideosText = parseVideosText;
+VideoCatalog.groupOptions = groupOptions;
+VideoCatalog.filterVideos = filterVideos;
 
 if (typeof module === 'object' && module.exports) {
   module.exports = VideoCatalog;
