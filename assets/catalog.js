@@ -196,10 +196,10 @@ function renderApp(container, videos) {
 
   container.innerHTML = '';
 
-  var subtitle = document.createElement('h2');
-  subtitle.className = 'video-catalog-subtitle';
-  subtitle.textContent = state.category;
-  container.appendChild(subtitle);
+  var pageHeading = null;
+  var section = container.closest('.markdown-section');
+  if (section) pageHeading = section.querySelector('h1');
+  if (pageHeading) pageHeading.textContent = state.category;
 
   var toolbar = document.createElement('div');
   toolbar.className = 'video-catalog-toolbar';
@@ -215,7 +215,7 @@ function renderApp(container, videos) {
 
   mountSidebarTabs(state.category, function (value) {
     state.category = value;
-    subtitle.textContent = value;
+    if (pageHeading) pageHeading.textContent = value;
     rerender();
   });
 

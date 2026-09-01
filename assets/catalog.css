@@ -52,10 +52,6 @@ body {
   font-weight: 600;
 }
 
-.video-catalog-subtitle {
-  margin: 0.5em 0 0;
-}
-
 .video-catalog-toolbar {
   display: flex;
   flex-wrap: wrap;
