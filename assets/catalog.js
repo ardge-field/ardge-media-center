@@ -196,6 +196,11 @@ function renderApp(container, videos) {
 
   container.innerHTML = '';
 
+  var subtitle = document.createElement('h2');
+  subtitle.className = 'video-catalog-subtitle';
+  subtitle.textContent = state.category;
+  container.appendChild(subtitle);
+
   var toolbar = document.createElement('div');
   toolbar.className = 'video-catalog-toolbar';
   container.appendChild(toolbar);
@@ -210,6 +215,7 @@ function renderApp(container, videos) {
 
   mountSidebarTabs(state.category, function (value) {
     state.category = value;
+    subtitle.textContent = value;
     rerender();
   });
 
