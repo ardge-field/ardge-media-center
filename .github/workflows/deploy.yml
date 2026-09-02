@@ -1,0 +1,74 @@
+name: Deploy and Release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Fetch video titles/channels from YouTube
+        run: node scripts/fetch-video-info.js
+
+      - name: Compute next version
+        id: version
+        run: |
+          LATEST_TAG=$(git tag --list 'v*' --sort=-v:refname | head -n1)
+          if [ -z "$LATEST_TAG" ]; then
+            LATEST_TAG="v0.0.0"
+          fi
+          VERSION=${LATEST_TAG#v}
+          MAJOR=$(echo "$VERSION" | cut -d. -f1)
+          MINOR=$(echo "$VERSION" | cut -d. -f2)
+          PATCH=$(echo "$VERSION" | cut -d. -f3)
+          NEW_TAG="v${MAJOR}.${MINOR}.$((PATCH + 1))"
+          echo "tag=$NEW_TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+      - name: Package release zip
+        run: |
+          mkdir -p /tmp/release
+          zip -r "/tmp/release/media-center-site-${{ steps.version.outputs.tag }}.zip" . -x '.git/*' -x '.github/*'
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${{ steps.version.outputs.tag }}" \
+            "/tmp/release/media-center-site-${{ steps.version.outputs.tag }}.zip" \
+            --title "${{ steps.version.outputs.tag }} ($(date +%Y-%m-%d))" \
+            --notes "Automated release for commit ${{ github.sha }}"
