@@ -1,51 +1,13 @@
-// Media Center catalog: parsing, filtering and rendering for the video list.
-// See ../../media_center_video_catalog_design_20260901_v1.md for the data format.
+// Media Center catalog: rendering for the video list.
+// Data comes from data/videos.json, generated at build time by
+// scripts/fetch-video-info.js — see ../../media_center_auto_title_fetch_design_20260902_v1.md.
 
 var VideoCatalog = {};
 
 // Fixed business-category tabs (left nav). Unlike 類型 (type), which is
-// still derived dynamically from videos.txt, these three are a deliberate,
+// still derived dynamically from the data, these three are a deliberate,
 // stable taxonomy chosen by the site owner rather than free-text data.
 var CATEGORIES = ['行銷宣傳', '教育訓練', '參考素材'];
-
-function extractYouTubeId(url) {
-  if (!url) return null;
-  var patterns = [
-    /[?&]v=([a-zA-Z0-9_-]{11})/,
-    /youtu\.be\/([a-zA-Z0-9_-]{11})/,
-    /youtube\.com\/shorts\/([a-zA-Z0-9_-]{11})/
-  ];
-  for (var i = 0; i < patterns.length; i++) {
-    var m = url.match(patterns[i]);
-    if (m) return m[1];
-  }
-  return null;
-}
-
-function getThumbnailUrl(videoId) {
-  return 'https://img.youtube.com/vi/' + videoId + '/hqdefault.jpg';
-}
-
-function parseVideosText(text) {
-  var videos = [];
-  var lines = text.split(/\r?\n/);
-  for (var i = 0; i < lines.length; i++) {
-    var line = lines[i].trim();
-    if (line === '' || line.indexOf('#') === 0) continue;
-    var parts = line.split('|');
-    if (parts.length !== 4) {
-      console.warn('videos.txt: skipping malformed line ' + (i + 1) + ': ' + line);
-      continue;
-    }
-    videos.push({
-      category: parts[0].trim(),
-      type: parts[1].trim(),
-      title: parts[2].trim(),
-      url: parts[3].trim()
-    });
-  }
-  return videos;
-}
 
 function groupOptions(videos) {
   var categories = [];
@@ -80,11 +42,10 @@ function renderCard(video) {
   card.target = '_blank';
   card.rel = 'noopener';
 
-  var videoId = extractYouTubeId(video.url);
-  if (videoId) {
+  if (video.thumbnailUrl) {
     var img = document.createElement('img');
     img.className = 'video-catalog-thumb';
-    img.src = getThumbnailUrl(videoId);
+    img.src = video.thumbnailUrl;
     img.alt = video.title;
     card.appendChild(img);
   } else {
@@ -106,6 +67,11 @@ function renderCard(video) {
   tags.className = 'video-catalog-tags';
   tags.textContent = video.category + ' · ' + video.type;
   meta.appendChild(tags);
+
+  var channel = document.createElement('div');
+  channel.className = 'video-catalog-channel';
+  channel.textContent = video.channel;
+  meta.appendChild(channel);
 
   card.appendChild(meta);
   return card;
@@ -238,23 +204,20 @@ function renderApp(container, videos) {
 }
 
 function init(container) {
-  fetch('data/videos.txt')
+  fetch('data/videos.json')
     .then(function (res) {
       if (!res.ok) throw new Error('HTTP ' + res.status);
-      return res.text();
+      return res.json();
     })
-    .then(function (text) {
-      renderApp(container, parseVideosText(text));
+    .then(function (videos) {
+      renderApp(container, videos);
     })
     .catch(function (err) {
-      console.error('Failed to load videos.txt:', err);
+      console.error('Failed to load videos.json:', err);
       container.innerHTML = '<p class="video-catalog-error">目前無法載入影片清單,請稍後再試。</p>';
     });
 }
 
-VideoCatalog.extractYouTubeId = extractYouTubeId;
-VideoCatalog.getThumbnailUrl = getThumbnailUrl;
-VideoCatalog.parseVideosText = parseVideosText;
 VideoCatalog.groupOptions = groupOptions;
 VideoCatalog.filterVideos = filterVideos;
 VideoCatalog.init = init;

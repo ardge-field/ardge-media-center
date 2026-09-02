@@ -144,6 +144,12 @@ body {
   color: #888;
 }
 
+.video-catalog-channel {
+  font-size: 12px;
+  color: #aaa;
+  margin-top: 2px;
+}
+
 .video-catalog-empty,
 .video-catalog-error {
   color: #888;
