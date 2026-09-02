@@ -4,6 +4,6 @@
   "version": "1.0.0",
   "description": "Internal media center: catalog of unlisted YouTube videos",
   "scripts": {
-    "test": "node --test tests/*.test.js"
+    "test": "node --test tests/*.test.js scripts/lib/*.test.js"
   }
 }
