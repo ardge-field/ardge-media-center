@@ -16,6 +16,10 @@ function resolveVideoInfo(entry, fetchImpl) {
       return res.json();
     })
     .then(function (data) {
+      if (typeof data.title !== 'string' || !data.title ||
+          typeof data.author_name !== 'string' || !data.author_name) {
+        throw new Error('oEmbed response missing title/author_name');
+      }
       return {
         category: entry.category,
         type: entry.type,

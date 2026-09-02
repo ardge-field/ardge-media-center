@@ -6,7 +6,7 @@ function parseVideosSource(text) {
     if (line === '' || line.indexOf('#') === 0) continue;
     var parts = line.split('|');
     if (parts.length !== 3) {
-      console.warn('videos.txt: skipping malformed line ' + (i + 1) + ': ' + line);
+      console.warn('::warning::videos.txt line ' + (i + 1) + ' has ' + parts.length + ' fields, expected 3 (分類|類型|網址); skipped: ' + line);
       continue;
     }
     entries.push({

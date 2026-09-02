@@ -41,6 +41,13 @@ test('resolveVideoInfo returns null when fetch throws', async () => {
   assert.equal(result, null);
 });
 
+test('resolveVideoInfo returns null when oEmbed response is missing title', async () => {
+  var entry = { category: '行銷宣傳', type: '影片', url: 'https://youtu.be/ddddddddddd' };
+  var fake = fakeFetch({ author_name: 'X' }, true);
+  var result = await resolveVideoInfo(entry, fake);
+  assert.equal(result, null);
+});
+
 test('resolveVideoInfo returns null when the url has no extractable video id', async () => {
   var entry = { category: '行銷宣傳', type: '影片', url: 'https://example.com/not-a-video' };
   var fake = fakeFetch({}, true);

@@ -12,6 +12,9 @@ function main() {
   return Promise.all(entries.map(function (entry) { return resolveVideoInfo(entry); }))
     .then(function (results) {
       var videos = results.filter(function (v) { return v !== null; });
+      if (videos.length === 0 && entries.length > 0) {
+        throw new Error('resolved 0 of ' + entries.length + ' entries; refusing to publish an empty catalog');
+      }
       fs.writeFileSync(OUTPUT_PATH, JSON.stringify(videos, null, 2) + '\n');
       console.log('Wrote ' + videos.length + ' of ' + entries.length + ' entries to ' + OUTPUT_PATH);
     });

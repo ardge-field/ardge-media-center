@@ -30,6 +30,9 @@ jobs:
         with:
           node-version: '20'
 
+      - name: Run unit tests
+        run: npm test
+
       - name: Fetch video titles/channels from YouTube
         run: node scripts/fetch-video-info.js
 
@@ -71,4 +74,5 @@ jobs:
           gh release create "${{ steps.version.outputs.tag }}" \
             "/tmp/release/media-center-site-${{ steps.version.outputs.tag }}.zip" \
             --title "${{ steps.version.outputs.tag }} ($(date +%Y-%m-%d))" \
-            --notes "Automated release for commit ${{ github.sha }}"
+            --notes "Automated release for commit ${{ github.sha }}" \
+            --target "${{ github.sha }}"
