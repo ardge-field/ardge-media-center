@@ -34,13 +34,23 @@ function resolveVideoInfo(entry, fetchImpl) {
       // The upload date comes from a second, best-effort fetch: if the watch
       // page is unreachable or its markup no longer has the field, the video
       // still gets published — just without a date to sort/display.
-      return fetchImpl(watchUrl)
-        .then(function (res) { return res.ok ? res.text() : null; })
-        .catch(function () { return null; })
-        .then(function (html) {
+      // A realistic browser User-Agent is set because some hosting IPs (e.g.
+      // CI runners) get served a stripped-down page for non-browser-looking
+      // requests, which is missing the JSON blob this regex needs.
+      return fetchImpl(watchUrl, {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+          'Accept-Language': 'en-US,en;q=0.9'
+        }
+      })
+        .then(function (res) { return res.ok ? res.text().then(function (html) { return { html: html, status: res.status }; }) : { html: null, status: res.status }; })
+        .catch(function (err) { return { html: null, status: null, error: err.message }; })
+        .then(function (result) {
+          var html = result.html;
           var uploadDate = html ? extractUploadDate(html) : null;
           if (!uploadDate) {
-            console.warn('fetch-video-info: could not determine upload date for ' + entry.url);
+            console.warn('fetch-video-info: could not determine upload date for ' + entry.url +
+              ' (status=' + result.status + ', bytes=' + (html ? html.length : 0) + (result.error ? ', error=' + result.error : '') + ')');
           }
           return {
             category: entry.category,
