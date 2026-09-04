@@ -158,6 +158,12 @@ body {
   color: #888;
 }
 
+.video-catalog-date {
+  font-size: 12px;
+  color: #888;
+  margin-top: 2px;
+}
+
 .video-catalog-channel {
   display: block;
   font-size: 12px;

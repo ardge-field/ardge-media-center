@@ -9,6 +9,25 @@ var VideoCatalog = {};
 // stable taxonomy chosen by the site owner rather than free-text data.
 var CATEGORIES = ['行銷宣傳', '教育訓練', '參考素材'];
 
+function sortByDateDesc(videos) {
+  return videos.slice().sort(function (a, b) {
+    if (!a.uploadDate && !b.uploadDate) return 0;
+    if (!a.uploadDate) return 1;
+    if (!b.uploadDate) return -1;
+    if (a.uploadDate < b.uploadDate) return 1;
+    if (a.uploadDate > b.uploadDate) return -1;
+    return 0;
+  });
+}
+
+function countByCategory(videos) {
+  var counts = {};
+  videos.forEach(function (v) {
+    counts[v.category] = (counts[v.category] || 0) + 1;
+  });
+  return counts;
+}
+
 function groupOptions(videos) {
   var categories = [];
   var types = [];
@@ -75,6 +94,13 @@ function renderCard(video) {
   tags.textContent = video.category + ' · ' + video.type;
   meta.appendChild(tags);
 
+  if (video.uploadDate) {
+    var date = document.createElement('div');
+    date.className = 'video-catalog-date';
+    date.textContent = video.uploadDate;
+    meta.appendChild(date);
+  }
+
   var channel = document.createElement('a');
   channel.className = 'video-catalog-channel video-catalog-channel-link';
   channel.href = video.channelUrl;
@@ -127,7 +153,7 @@ function renderFilterGroup(parent, label, values, activeValue, onChange) {
   parent.appendChild(group);
 }
 
-function renderCategoryTabs(host, activeCategory, onChange) {
+function renderCategoryTabs(host, counts, activeCategory, onChange) {
   host.className = 'video-catalog-tabs';
 
   var heading = document.createElement('div');
@@ -138,7 +164,7 @@ function renderCategoryTabs(host, activeCategory, onChange) {
   var buttons = CATEGORIES.map(function (category) {
     var btn = document.createElement('button');
     btn.type = 'button';
-    btn.textContent = category;
+    btn.textContent = category + '(' + (counts[category] || 0) + ')';
     btn.className = 'video-catalog-tab' + (category === activeCategory ? ' active' : '');
     btn.addEventListener('click', function () {
       buttons.forEach(function (b) { b.classList.remove('active'); });
@@ -150,7 +176,7 @@ function renderCategoryTabs(host, activeCategory, onChange) {
   });
 }
 
-function mountSidebarTabs(activeCategory, onChange) {
+function mountSidebarTabs(counts, activeCategory, onChange) {
   var sidebar = document.querySelector('.sidebar');
   if (!sidebar) return;
   var existing = sidebar.querySelector('.video-catalog-tabs');
@@ -163,12 +189,13 @@ function mountSidebarTabs(activeCategory, onChange) {
   } else {
     sidebar.appendChild(tabsHost);
   }
-  renderCategoryTabs(tabsHost, activeCategory, onChange);
+  renderCategoryTabs(tabsHost, counts, activeCategory, onChange);
 }
 
 function renderApp(container, videos) {
   var state = { category: CATEGORIES[0], type: 'all', keyword: '' };
   var options = groupOptions(videos);
+  var counts = countByCategory(videos);
 
   container.innerHTML = '';
 
@@ -189,7 +216,7 @@ function renderApp(container, videos) {
     renderGrid(grid, filterVideos(videos, state));
   }
 
-  mountSidebarTabs(state.category, function (value) {
+  mountSidebarTabs(counts, state.category, function (value) {
     state.category = value;
     if (pageHeading) pageHeading.textContent = value;
     rerender();
@@ -220,7 +247,7 @@ function init(container) {
       return res.json();
     })
     .then(function (videos) {
-      renderApp(container, videos);
+      renderApp(container, sortByDateDesc(videos));
     })
     .catch(function (err) {
       console.error('Failed to load videos.json:', err);
@@ -230,6 +257,8 @@ function init(container) {
 
 VideoCatalog.groupOptions = groupOptions;
 VideoCatalog.filterVideos = filterVideos;
+VideoCatalog.sortByDateDesc = sortByDateDesc;
+VideoCatalog.countByCategory = countByCategory;
 VideoCatalog.init = init;
 
 if (typeof module === 'object' && module.exports) {

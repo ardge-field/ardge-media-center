@@ -47,3 +47,36 @@ test('filterVideos keyword match is case-insensitive', () => {
   var result = VideoCatalog.filterVideos(videos, { keyword: 'launch' });
   assert.equal(result.length, 1);
 });
+
+test('sortByDateDesc orders videos from newest to oldest', () => {
+  var videos = [
+    { title: 'A', uploadDate: '2026-01-01' },
+    { title: 'B', uploadDate: '2026-06-15' },
+    { title: 'C', uploadDate: '2026-03-10' }
+  ];
+  var result = VideoCatalog.sortByDateDesc(videos);
+  assert.deepEqual(result.map(function (v) { return v.title; }), ['B', 'C', 'A']);
+});
+
+test('sortByDateDesc sorts videos with no date to the end', () => {
+  var videos = [
+    { title: 'A', uploadDate: null },
+    { title: 'B', uploadDate: '2026-06-15' }
+  ];
+  var result = VideoCatalog.sortByDateDesc(videos);
+  assert.deepEqual(result.map(function (v) { return v.title; }), ['B', 'A']);
+});
+
+test('sortByDateDesc does not mutate the input array', () => {
+  var videos = [
+    { title: 'A', uploadDate: '2026-01-01' },
+    { title: 'B', uploadDate: '2026-06-15' }
+  ];
+  VideoCatalog.sortByDateDesc(videos);
+  assert.equal(videos[0].title, 'A');
+});
+
+test('countByCategory tallies videos per category', () => {
+  var counts = VideoCatalog.countByCategory(SAMPLE_VIDEOS);
+  assert.deepEqual(counts, { '行銷': 1, '教育訓練': 2 });
+});
