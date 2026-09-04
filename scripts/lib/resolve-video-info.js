@@ -17,8 +17,9 @@ function resolveVideoInfo(entry, fetchImpl) {
     })
     .then(function (data) {
       if (typeof data.title !== 'string' || !data.title ||
-          typeof data.author_name !== 'string' || !data.author_name) {
-        throw new Error('oEmbed response missing title/author_name');
+          typeof data.author_name !== 'string' || !data.author_name ||
+          typeof data.author_url !== 'string' || !data.author_url) {
+        throw new Error('oEmbed response missing title/author_name/author_url');
       }
       return {
         category: entry.category,
@@ -27,7 +28,8 @@ function resolveVideoInfo(entry, fetchImpl) {
         videoId: videoId,
         thumbnailUrl: getThumbnailUrl(videoId),
         title: data.title,
-        channel: data.author_name
+        channel: data.author_name,
+        channelUrl: data.author_url
       };
     })
     .catch(function (err) {

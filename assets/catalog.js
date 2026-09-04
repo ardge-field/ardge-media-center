@@ -36,30 +36,37 @@ function filterVideos(videos, filters) {
 }
 
 function renderCard(video) {
-  var card = document.createElement('a');
+  var card = document.createElement('div');
   card.className = 'video-catalog-card';
-  card.href = video.url;
-  card.target = '_blank';
-  card.rel = 'noopener';
+
+  var thumbLink = document.createElement('a');
+  thumbLink.className = 'video-catalog-thumb-link';
+  thumbLink.href = video.url;
+  thumbLink.target = '_blank';
+  thumbLink.rel = 'noopener';
 
   if (video.thumbnailUrl) {
     var img = document.createElement('img');
     img.className = 'video-catalog-thumb';
     img.src = video.thumbnailUrl;
     img.alt = video.title;
-    card.appendChild(img);
+    thumbLink.appendChild(img);
   } else {
     var fallback = document.createElement('div');
     fallback.className = 'video-catalog-thumb video-catalog-thumb-fallback';
     fallback.textContent = '無法預覽';
-    card.appendChild(fallback);
+    thumbLink.appendChild(fallback);
   }
+  card.appendChild(thumbLink);
 
   var meta = document.createElement('div');
   meta.className = 'video-catalog-meta';
 
-  var title = document.createElement('div');
-  title.className = 'video-catalog-title';
+  var title = document.createElement('a');
+  title.className = 'video-catalog-title video-catalog-title-link';
+  title.href = video.url;
+  title.target = '_blank';
+  title.rel = 'noopener';
   title.textContent = video.title;
   meta.appendChild(title);
 
@@ -68,8 +75,11 @@ function renderCard(video) {
   tags.textContent = video.category + ' · ' + video.type;
   meta.appendChild(tags);
 
-  var channel = document.createElement('div');
-  channel.className = 'video-catalog-channel';
+  var channel = document.createElement('a');
+  channel.className = 'video-catalog-channel video-catalog-channel-link';
+  channel.href = video.channelUrl;
+  channel.target = '_blank';
+  channel.rel = 'noopener';
   channel.textContent = video.channel;
   meta.appendChild(channel);
 
