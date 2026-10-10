@@ -3,10 +3,14 @@
 # 分類固定為三個業務分類(對應左側頁籤):行銷宣傳 / 教育訓練 / 參考素材,新增列時分類欄位請填這三者之一。
 # 類型欄位為自由文字,新增新類型不需要改程式,類型篩選按鈕會自動掃描本檔案產生選項。
 # 標題與頻道名稱不用填,build 時會自動向 YouTube oEmbed 抓取(見 scripts/fetch-video-info.js)。
+行銷宣傳|影片|https://youtu.be/KLbvNXg-uG4
+行銷宣傳|影片|https://youtu.be/S2hTZdgsaWk
 行銷宣傳|影片|https://youtu.be/fAAXvksDI8Q
 行銷宣傳|影片|https://youtu.be/C3oFJMlf7Fg
 行銷宣傳|影片|https://youtu.be/N2h9byOX9BI
 行銷宣傳|影片|https://youtu.be/64HZ5g8ZisY
+行銷宣傳|短片|https://youtube.com/shorts/_caNjwtCNaA
+行銷宣傳|短片|https://youtube.com/shorts/SkcVKSdJF8k
 行銷宣傳|短片|https://youtube.com/shorts/zIOJZ9SOL2w
 行銷宣傳|短片|https://youtube.com/shorts/irXI1AsOsso
 行銷宣傳|短片|https://youtube.com/shorts/Vnk31EOddYA
