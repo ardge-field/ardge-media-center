@@ -15,9 +15,10 @@
 ### 1. 快速流程摘要
 
 1. 編輯 `data/videos.txt`,新增/刪除/修改影片列。
-2. commit 並 push 到 `main`。
-3. GitHub Actions 自動執行:跑測試 → 向 YouTube 抓標題/頻道/上傳日期 → 部署網站 → 版號 +1 並建立 Release。
-4. 約 1 分鐘後,到網站確認新影片已出現。
+2. 在本機執行 `node scripts/fetch-video-info.js`(**必要**,見第 5 節),抓取新影片的上傳日期並寫入 `data/upload-dates.json`。
+3. commit `data/videos.txt` 與 `data/upload-dates.json`,push 到 `main`。
+4. GitHub Actions 自動執行:跑測試 → 向 YouTube 抓標題/頻道(日期取自 `upload-dates.json`)→ 部署網站 → 版號 +1 並建立 Release。
+5. 約 1 分鐘後,到網站確認新影片已出現。
 
 只需要維護「分類、類型、網址」三個欄位,其他資訊全部自動抓取。
 
@@ -45,7 +46,7 @@
 |---|---|
 | 標題、頻道名稱、頻道連結 | YouTube oEmbed |
 | 縮圖 | 由影片 ID 組出 `img.youtube.com` 網址 |
-| 上傳日期 | YouTube 影片頁(抓不到時該影片照常顯示,只是沒有日期、排在最後) |
+| 上傳日期 | 本機執行時從 YouTube 影片頁抓取,存入 `data/upload-dates.json`;建置時優先使用該檔(沒有日期的影片照常顯示,只是排在最後) |
 
 ### 4. 常見操作範例
 
@@ -69,16 +70,20 @@
 
 **修改標題**:到 YouTube 後台改影片標題,然後重新 push 任一次(見第 7 節「標題沒更新」)。`videos.txt` 裡沒有標題欄位。
 
-### 5. 本機預檢(選用)
+### 5. 本機執行(必要)
 
-push 前想先確認,可在 repo 根目錄執行(需 Node.js 20 以上):
+GitHub Actions 的機房網路抓不到 YouTube 上傳日期,日期必須在本機抓取後 commit。push 前在 repo 根目錄執行(需 Node.js 20 以上):
 
 ```bash
 npm test                          # 單元測試,應全部 pass
 node scripts/fetch-video-info.js  # 實際向 YouTube 抓資料,產生 data/videos.json
 ```
 
-`fetch-video-info.js` 最後一行應為 `Wrote N of N entries ...`,兩個數字相同代表每一行都抓成功;若前面的數字較小,上方會有 `fetch-video-info:` 開頭的警告指出哪一行失敗。
+`fetch-video-info.js` 最後會輸出兩行摘要。第一行為 `Wrote N of N entries ...`,兩個數字相同代表每一行都抓成功;若前面的數字較小,上方會有 `fetch-video-info:` 開頭的警告指出哪一行失敗。
+
+第二行為 `upload-dates: C from cache, +K new, M missing`:K 是這次新寫入 `data/upload-dates.json` 的日期數,M 應為 0。執行後 `git status` 會看到 `data/upload-dates.json` 有變更,請與 `videos.txt` 一起 commit。
+
+`data/upload-dates.json` 格式為 `{ "影片ID": "YYYY-MM-DD" }`。已存在的日期不會被覆蓋;若某支影片日期需要修正,直接手改該檔案即可。
 
 想在本機預覽網站:
 
@@ -102,10 +107,13 @@ python3 -m http.server 8000   # 之後開 http://localhost:8000/
 | 所有影片都抓失敗(例如 YouTube 暫時連不上) | 本次部署中止,網站維持上一版 | 稍後到 Actions 頁面按 Re-run,或再 push 一次 |
 | 單元測試失敗 | 本次不部署,網站維持上一版 | 看 Actions log 的 `Run unit tests` 步驟 |
 | 標題沒更新(剛在 YouTube 改過標題) | oEmbed 可能還回傳舊標題 | 過一段時間後再 push 一次(或 Re-run 最新的 Action) |
+| 網站上某支影片沒有日期、排在最後 | Actions log/Annotations 出現 `no upload date for <影片ID>` | 回本機執行 `node scripts/fetch-video-info.js`,commit `data/upload-dates.json` 再 push |
+| `data/upload-dates.json` 格式錯誤(手改壞了) | 本次部署中止,網站維持上一版 | 看 Actions log 的 `upload date cache must be a JSON object` 或 JSON 語法錯誤訊息,修正檔案再 push |
 
 ### 8. 注意事項
 
 - `data/videos.json` 是建置產物,已列入 `.gitignore`,不要 commit。
+- `data/upload-dates.json` **要** commit(與 `videos.json` 相反),它是上傳日期的唯一來源。
 - 影片隱私設定需為 **unlisted(不公開)** 或 **public**;**private(私人)** 影片抓不到資料。
 - 每次 push 到 `main`(包含只改文件)都會讓版號 +1 並產生一個 Release。
 - 版號只存在於 git tag / GitHub Release,不寫回任何檔案,不需手動維護。
