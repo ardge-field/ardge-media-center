@@ -10,8 +10,23 @@ function extractUploadDate(html) {
   return m ? m[1] : null;
 }
 
-function resolveVideoInfo(entry, fetchImpl) {
+function buildVideo(entry, videoId, data, uploadDate) {
+  return {
+    category: entry.category,
+    type: entry.type,
+    url: entry.url,
+    videoId: videoId,
+    thumbnailUrl: getThumbnailUrl(videoId),
+    title: data.title,
+    channel: data.author_name,
+    channelUrl: data.author_url,
+    uploadDate: uploadDate
+  };
+}
+
+function resolveVideoInfo(entry, fetchImpl, options) {
   fetchImpl = fetchImpl || fetch;
+  var cachedDate = options && options.cachedDate;
   var videoId = extractYouTubeId(entry.url);
   if (!videoId) {
     console.warn('fetch-video-info: could not extract a video id from ' + entry.url);
@@ -31,6 +46,9 @@ function resolveVideoInfo(entry, fetchImpl) {
           typeof data.author_url !== 'string' || !data.author_url) {
         throw new Error('oEmbed response missing title/author_name/author_url');
       }
+      // A date from data/upload-dates.json wins: upload dates never change,
+      // and CI runners can't scrape them anyway (see date-cache.js).
+      if (cachedDate) return buildVideo(entry, videoId, data, cachedDate);
       // The upload date comes from a second, best-effort fetch: if the watch
       // page is unreachable or its markup no longer has the field, the video
       // still gets published — just without a date to sort/display.
@@ -52,17 +70,7 @@ function resolveVideoInfo(entry, fetchImpl) {
             console.warn('fetch-video-info: could not determine upload date for ' + entry.url +
               ' (status=' + result.status + ', bytes=' + (html ? html.length : 0) + (result.error ? ', error=' + result.error : '') + ')');
           }
-          return {
-            category: entry.category,
-            type: entry.type,
-            url: entry.url,
-            videoId: videoId,
-            thumbnailUrl: getThumbnailUrl(videoId),
-            title: data.title,
-            channel: data.author_name,
-            channelUrl: data.author_url,
-            uploadDate: uploadDate
-          };
+          return buildVideo(entry, videoId, data, uploadDate);
         });
     })
     .catch(function (err) {

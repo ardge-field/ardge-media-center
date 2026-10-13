@@ -99,3 +99,25 @@ test('resolveVideoInfo returns null when the url has no extractable video id', a
   var result = await resolveVideoInfo(entry, fake);
   assert.equal(result, null);
 });
+
+test('resolveVideoInfo uses cachedDate and skips the watch page fetch', async () => {
+  var entry = { category: '行銷宣傳', type: '影片', url: 'https://youtu.be/ggggggggggg' };
+  var requested = [];
+  var inner = fakeFetch(
+    { title: '測試標題', author_name: '測試頻道', author_url: 'https://www.youtube.com/@test' },
+    VALID_WATCH_HTML
+  );
+  var recording = function (url, init) { requested.push(url); return inner(url, init); };
+  var result = await resolveVideoInfo(entry, recording, { cachedDate: '2026-10-12' });
+  assert.equal(result.uploadDate, '2026-10-12');
+  assert.equal(result.title, '測試標題');
+  assert.equal(requested.length, 1);
+  assert.ok(requested[0].indexOf('oembed') !== -1);
+});
+
+test('resolveVideoInfo still returns null on oEmbed failure even with a cachedDate', async () => {
+  var entry = { category: '行銷宣傳', type: '影片', url: 'https://youtu.be/hhhhhhhhhhh' };
+  var fake = fakeFetch({}, VALID_WATCH_HTML, false);
+  var result = await resolveVideoInfo(entry, fake, { cachedDate: '2026-10-12' });
+  assert.equal(result, null);
+});
