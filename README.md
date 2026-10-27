@@ -1,6 +1,6 @@
 # ARDGE Media Center
 
-內部影片索引網站,整理已上架到 YouTube、對外未公開(unlisted)的影片與短片連結。
+內部影片索引網站,整理已上架到 YouTube 的影片與短片連結,包含已公開(public)與對外未公開(unlisted)的影片。
 
 - 網站:https://ardge-field.github.io/ardge-media-center/
 - 部署紀錄:https://github.com/ardge-field/ardge-media-center/actions
